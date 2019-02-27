@@ -22,11 +22,11 @@ class ElementSerialize(serializers.ModelSerializer):
     moderator_checked = serializers.NullBooleanField(required=False)
 
     def create(self, validated_data):
-        try:
-            validated_data['moderator_checked']
-        except KeyError:
+        if 'moderator_checked' in validated_data:
+            raise serializers.ValidationError(
+                "TypeError: __init__() got an unaccepted keyword argument 'moderator_checked'")
+        else:
             return Element(**validated_data)
-        raise serializers.ValidationError("TypeError: __init__() got an unaccepted keyword argument 'moderator_checked'")
 
     def update(self, instance, validated_data):
         raise serializers.ValidationError("Method not accepted")
