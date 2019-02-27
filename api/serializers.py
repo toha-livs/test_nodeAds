@@ -18,7 +18,7 @@ class FilteredListSerializer(serializers.ListSerializer):
 
 class ElementSerialize(serializers.ModelSerializer):
 
-    date = serializers.DateField()
+    date = serializers.DateField(required=False)
     moderator_checked = serializers.NullBooleanField(required=False)
 
     def create(self, validated_data):
@@ -26,7 +26,9 @@ class ElementSerialize(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "TypeError: __init__() got an unaccepted keyword argument 'moderator_checked'")
         else:
-            return Element(**validated_data)
+            element = Element(**validated_data)
+            element.save()
+            return element
 
     def update(self, instance, validated_data):
         raise serializers.ValidationError("Method not accepted")
@@ -56,7 +58,6 @@ class GroupSerialize(serializers.ModelSerializer):
 
     total_groups = serializers.SerializerMethodField('get_serialize_groups')
     total_elements = serializers.SerializerMethodField('get_serialize_element')
-
 
     class Meta:
         model = Group

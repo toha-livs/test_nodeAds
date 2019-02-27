@@ -1,4 +1,13 @@
+import os
 from django.db import models
+from django.core.exceptions import ValidationError
+
+
+def validator_icon(value):
+    valid_extensions = ['.jpg', '.png']
+    ext = os.path.splitext(value.name)[1]
+    if not ext.lower() in valid_extensions:
+        raise ValidationError(u'Unsupported file extension.')
 
 
 class Group(models.Model):
@@ -9,7 +18,7 @@ class Group(models.Model):
                               blank=True,
                               related_name='rel_groups',
                               verbose_name='группа')
-    icon = models.ImageField(upload_to='static/icon/group/', verbose_name='иконка')
+    icon = models.ImageField(upload_to='static/icon/group/', verbose_name='иконка', validators=[validator_icon])
     name = models.CharField(max_length=64, verbose_name='назваине')
     description = models.CharField(max_length=512, null=True, blank=True, verbose_name='описание')
 
@@ -32,10 +41,10 @@ class Group(models.Model):
 class Element(models.Model):
     id = models.AutoField(primary_key=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='element', verbose_name='группа')
-    icon = models.ImageField(upload_to='static/icon/element/', verbose_name='иконка')
+    icon = models.ImageField(upload_to='static/icon/element/', verbose_name='иконка', validators=[validator_icon])
     name = models.CharField(max_length=64, verbose_name='назваине')
     description = models.CharField(max_length=512, null=True, blank=True, verbose_name='описание')
-    date = models.DateField(verbose_name='дата')
+    date = models.DateField(auto_now_add=True, verbose_name='дата')
     moderator_checked = models.NullBooleanField(null=True, verbose_name='проверен модератором')
 
     def __str__(self):
