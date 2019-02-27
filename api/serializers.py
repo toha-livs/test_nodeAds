@@ -28,6 +28,9 @@ class ElementSerialize(serializers.ModelSerializer):
             return Element(**validated_data)
         raise serializers.ValidationError("TypeError: __init__() got an unaccepted keyword argument 'moderator_checked'")
 
+    def update(self, instance, validated_data):
+        raise serializers.ValidationError("Method not accepted")
+
     class Meta:
         model = Element
         list_serializer_class = FilteredListSerializer
@@ -42,11 +45,18 @@ class GroupSerialize(serializers.ModelSerializer):
     def get_serialize_element(self, obj):
         return obj.get_total_elements()
 
+    def create(self, validated_data):
+        raise serializers.ValidationError("Method not accepted")
+
+    def update(self, instance, validated_data):
+        raise serializers.ValidationError("Method not accepted")
+
     element = ElementSerialize(many=True)
     rel_groups = SubGroupSerializer(many=True)
 
     total_groups = serializers.SerializerMethodField('get_serialize_groups')
     total_elements = serializers.SerializerMethodField('get_serialize_element')
+
 
     class Meta:
         model = Group
