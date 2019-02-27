@@ -24,7 +24,7 @@ class ElementSerialize(serializers.ModelSerializer):
     def create(self, validated_data):
         if 'moderator_checked' in validated_data:
             raise serializers.ValidationError(
-                "TypeError: __init__() got an unaccepted keyword argument 'moderator_checked'")
+                "Unexpected keyword argument 'moderator_check'")
         else:
             element = Element(**validated_data)
             element.save()
